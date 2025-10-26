@@ -49,3 +49,5 @@ animation = &"walk"
 shape = SubResource("CapsuleShape2D_b26j0")
 
 [connection signal="body_entered" from="." to="." method="_on_body_entered"]
+[connection signal="hit" from="." to="." method="game_over"]
+[connection signal="hit" from="." to="." method="_on_hit"]
