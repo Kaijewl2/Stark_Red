@@ -1,0 +1,62 @@
+[gd_scene load_steps=9 format=3 uid="uid://vevtag5f0dnh"]
+
+[ext_resource type="Texture2D" uid="uid://bo6v2ka4acp8g" path="res://icon.svg" id="1_fuej0"]
+[ext_resource type="PackedScene" uid="uid://ce08gjhvd82ms" path="res://scenes/player_3d.tscn" id="1_qudg5"]
+[ext_resource type="PackedScene" uid="uid://7ourhq0gg24r" path="res://scenes/boss.tscn" id="2_qejwk"]
+
+[sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_4xowi"]
+sky_top_color = Color(0, 0, 0, 1)
+sky_horizon_color = Color(0.648107, 0.684606, 0.624057, 1)
+ground_horizon_color = Color(0.662243, 0.671743, 0.686743, 1)
+
+[sub_resource type="Sky" id="Sky_a202f"]
+sky_material = SubResource("ProceduralSkyMaterial_4xowi")
+
+[sub_resource type="Environment" id="Environment_noarx"]
+background_mode = 2
+sky = SubResource("Sky_a202f")
+tonemap_mode = 2
+glow_enabled = true
+fog_light_color = Color(0.113368, 0.0609869, 0.0583537, 1)
+adjustment_color_correction = ExtResource("1_fuej0")
+
+[sub_resource type="NavigationMesh" id="NavigationMesh_fuej0"]
+vertices = PackedVector3Array(7.53556, -0.0857321, 0.601503, 7.53556, -0.0857321, -0.148497, 7.28556, -0.0857321, -8.8985, -8.46444, -0.0857321, -8.8985, -8.46444, -0.0857321, 0.601503, 12.7856, -0.0857321, -0.648497, 13.0356, -0.0857321, 0.351503, 17.7856, -0.0857321, 0.351503, 17.7856, -0.0857321, -8.8985, 7.78556, -0.0857321, -0.648497, 12.7856, -0.0857321, 1.1015, 9.03556, -0.0857321, 13.3515, 17.7856, -0.0857321, 13.3515, 9.28556, -0.0857321, 1.1015, 7.78556, -0.0857321, 1.1015, -8.46444, -0.0857321, 13.3515)
+polygons = [PackedInt32Array(1, 0, 2), PackedInt32Array(2, 0, 3), PackedInt32Array(3, 0, 4), PackedInt32Array(6, 5, 7), PackedInt32Array(7, 5, 8), PackedInt32Array(9, 1, 2), PackedInt32Array(9, 2, 5), PackedInt32Array(5, 2, 8), PackedInt32Array(6, 7, 10), PackedInt32Array(10, 7, 12), PackedInt32Array(10, 12, 11), PackedInt32Array(11, 13, 10), PackedInt32Array(14, 13, 11), PackedInt32Array(14, 11, 0), PackedInt32Array(0, 11, 4), PackedInt32Array(4, 11, 15)]
+
+[sub_resource type="ConcavePolygonShape3D" id="ConcavePolygonShape3D_qejwk"]
+data = PackedVector3Array(1, 0, 1, -1, 0, 1, 1, 0, -1, -1, 0, 1, -1, 0, -1, 1, 0, -1)
+
+[node name="boss_battle" type="Node3D"]
+
+[node name="WorldEnvironment" type="WorldEnvironment" parent="."]
+environment = SubResource("Environment_noarx")
+
+[node name="DirectionalLight3D" type="DirectionalLight3D" parent="."]
+transform = Transform3D(-0.866025, -0.396677, 0.304381, 0, 0.608761, 0.793353, -0.5, 0.687064, -0.527203, 0, 0, 0)
+shadow_enabled = true
+directional_shadow_split_1 = 0.657
+
+[node name="player_3D" parent="." instance=ExtResource("1_qudg5")]
+boss_path = NodePath("../NavigationRegion3D/boss")
+
+[node name="NavigationRegion3D" type="NavigationRegion3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.0144536, -0.000561237, -0.105675)
+navigation_mesh = SubResource("NavigationMesh_fuej0")
+
+[node name="boss" parent="NavigationRegion3D" instance=ExtResource("2_qejwk")]
+transform = Transform3D(0.523582, 0, 0.57139, 0, 0.775, 0, -0.57139, 0, 0.523582, -6.73641, -0.449551, -7.96154)
+player_path = NodePath("../../player_3D")
+
+[node name="MeshInstance3D" type="CSGBox3D" parent="NavigationRegion3D"]
+transform = Transform3D(11.685, 0, 0, 0, 11.685, 0, 0, 0, 11.685, 4.70557, -0.679542, 2.2865)
+size = Vector3(2.33975, 0.0267334, 1.96518)
+
+[node name="StaticBody3D" type="StaticBody3D" parent="NavigationRegion3D/MeshInstance3D"]
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="NavigationRegion3D/MeshInstance3D/StaticBody3D"]
+shape = SubResource("ConcavePolygonShape3D_qejwk")
+
+[node name="CSGBox3D" type="CSGBox3D" parent="NavigationRegion3D"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 10.1757, 0.817993, 0.270569)
+size = Vector3(4.26343, 2.63599, 0.458862)
