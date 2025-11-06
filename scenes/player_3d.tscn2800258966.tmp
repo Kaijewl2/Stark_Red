@@ -1,0 +1,85 @@
+[gd_scene load_steps=10 format=3 uid="uid://ce08gjhvd82ms"]
+
+[ext_resource type="Script" uid="uid://d0dcvy32nyifj" path="res://scripts/player_3d.gd" id="1_52vux"]
+[ext_resource type="Script" uid="uid://yt41gvmhyurv" path="res://scripts/hand.gd" id="2_2djwe"]
+[ext_resource type="PackedScene" uid="uid://bivo5w2l7xqin" path="res://scenes/arm_blaster.tscn" id="3_4jfb6"]
+[ext_resource type="Texture2D" uid="uid://bo6v2ka4acp8g" path="res://art/icon.svg" id="4_4jfb6"]
+[ext_resource type="Texture2D" uid="uid://dxgn2ivcurr7j" path="res://art/blue_bar.png" id="5_yevqy"]
+[ext_resource type="AudioStream" uid="uid://bhg22glkb3tuj" path="res://sounds/dash.mp3" id="6_sxlqi"]
+
+[sub_resource type="CapsuleMesh" id="CapsuleMesh_reoop"]
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_52vux"]
+albedo_color = Color(0, 0.247059, 1, 1)
+
+[sub_resource type="ConvexPolygonShape3D" id="ConvexPolygonShape3D_2djwe"]
+points = PackedVector3Array(-0.125207, -0.532801, -0.480507, 0.0227831, 0.47607, 0.498884, 0.169713, 0.559144, 0.464172, 0.231051, -0.803591, 0.320455, 0.40741, 0.651043, -0.243523, -0.482789, 0.594843, 0.0822132, -0.362868, -0.682312, 0.289697, 0.469044, -0.654529, -0.0662713, -0.127444, 0.842701, -0.338103, -0.393435, -0.683942, -0.244717, 0.438255, 0.623309, 0.200849, 0.0841477, 0.977454, 0.114795, -0.0682023, -0.976458, -0.12927, 0.20055, -0.563129, -0.451454, -0.185527, 0.595453, -0.453475, -0.273363, 0.592268, 0.407754, -0.00693649, -0.476823, 0.49966, 0.375821, -0.588614, 0.316955, 0.111579, 0.563059, -0.481177, -0.41725, 0.527866, -0.270497, -0.484546, -0.596972, -0.0665097, -0.279747, 0.908561, 0.0533361, -0.250197, -0.880712, 0.205319, 0.263647, -0.902771, -0.127394, 0.293368, 0.871526, -0.157196, 0.373412, -0.526319, -0.328246, 0.499663, 0.476641, -0.00688856, 0.0531056, 0.875001, 0.324703, -0.154543, -0.590854, 0.465879, -0.0972799, -0.782358, -0.398188, -0.387649, -0.498171, 0.31565, -0.30068, -0.587995, -0.388901)
+
+[node name="player_3D" type="CharacterBody3D"]
+transform = Transform3D(0.8, 0, 0, 0, 0.8, 0, 0, 0, 0.8, 0, 0, 0)
+script = ExtResource("1_52vux")
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="."]
+mesh = SubResource("CapsuleMesh_reoop")
+surface_material_override/0 = SubResource("StandardMaterial3D_52vux")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="."]
+shape = SubResource("ConvexPolygonShape3D_2djwe")
+
+[node name="HP_UI" type="Label" parent="."]
+anchors_preset = 2
+anchor_top = 1.0
+anchor_bottom = 1.0
+offset_left = 12.0
+offset_top = -54.0
+offset_right = 118.0
+offset_bottom = -9.0
+grow_vertical = 0
+theme_override_font_sizes/font_size = 32
+text = "HP: "
+
+[node name="Head" type="Node3D" parent="."]
+
+[node name="Camera3D" type="Camera3D" parent="Head"]
+transform = Transform3D(1.25, 0, 0, 0, 1.25, 0, 0, 0, 1.25, 0, 0.88757, 0.0528358)
+
+[node name="hand" type="Node3D" parent="Head/Camera3D"]
+script = ExtResource("2_2djwe")
+
+[node name="ArmBlaster" parent="Head/Camera3D/hand" instance=ExtResource("3_4jfb6")]
+transform = Transform3D(-5.11423e-08, 0, 1.17, 0, 1.17, 0, -1.17, 0, -5.11423e-08, 0.32, -0.165, -0.292)
+damage = 15.0
+
+[node name="Crosshair_UI" type="TextureRect" parent="."]
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -5.0
+offset_top = -5.0
+offset_right = 5.0
+offset_bottom = 5.0
+grow_horizontal = 2
+grow_vertical = 2
+size_flags_horizontal = 4
+size_flags_vertical = 4
+texture = ExtResource("4_4jfb6")
+expand_mode = 1
+
+[node name="Stamina_UI" type="TextureProgressBar" parent="."]
+anchors_preset = 4
+anchor_top = 0.5
+anchor_bottom = 0.5
+offset_left = 13.0
+offset_top = 265.0
+offset_right = 1254.0
+offset_bottom = 335.0
+grow_vertical = 2
+scale = Vector2(0.16, 0.16)
+value = 100.0
+texture_progress = ExtResource("5_yevqy")
+
+[node name="dash_sound" type="AudioStreamPlayer" parent="."]
+stream = ExtResource("6_sxlqi")
+pitch_scale = 3.44

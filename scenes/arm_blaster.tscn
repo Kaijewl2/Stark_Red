@@ -1,0 +1,151 @@
+[gd_scene load_steps=10 format=3 uid="uid://bivo5w2l7xqin"]
+
+[ext_resource type="Script" uid="uid://devo36uy4udi" path="res://scripts/gun.gd" id="1_6bf5m"]
+[ext_resource type="PackedScene" uid="uid://clr55dtonsr15" path="res://models/ak47variant.fbx" id="2_ngp04"]
+[ext_resource type="AudioStream" uid="uid://bus2kerb6gfqj" path="res://sounds/AK47_sound.mp3" id="3_o4i7d"]
+[ext_resource type="AudioStream" uid="uid://lkygg552owlv" path="res://sounds/perfect-fart.mp3" id="4_ngp04"]
+
+[sub_resource type="Animation" id="Animation_wpxjn"]
+length = 0.001
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("model:rotation")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 0,
+"values": [Vector3(0, 0, 0)]
+}
+tracks/1/type = "value"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath("model:position")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 0,
+"values": [Vector3(0, 0, 0)]
+}
+
+[sub_resource type="Animation" id="Animation_t56l6"]
+resource_name = "equip"
+length = 0.3
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("model:position")
+tracks/0/interp = 2
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0, 0.3),
+"transitions": PackedFloat32Array(1, 1),
+"update": 0,
+"values": [Vector3(-0.2, -0.2, 0), Vector3(0, 0, 0)]
+}
+tracks/1/type = "value"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath("model:rotation")
+tracks/1/interp = 2
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"times": PackedFloat32Array(0, 0.3),
+"transitions": PackedFloat32Array(1, 1),
+"update": 0,
+"values": [Vector3(0, 0, -0.872665), Vector3(0, 0, 0)]
+}
+
+[sub_resource type="Animation" id="Animation_3xdmb"]
+resource_name = "shoot"
+length = 0.2
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("model:rotation")
+tracks/0/interp = 2
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0, 0.1, 0.2),
+"transitions": PackedFloat32Array(1, 1, 1),
+"update": 0,
+"values": [Vector3(0, 0, 0), Vector3(0, 0, 0.122173), Vector3(0, 0, 0)]
+}
+tracks/1/type = "value"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath("model:position")
+tracks/1/interp = 2
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"times": PackedFloat32Array(0, 0.0600984, 0.2),
+"transitions": PackedFloat32Array(1, 1, 1),
+"update": 0,
+"values": [Vector3(0, 0, 0), Vector3(-0.015, 0, 0), Vector3(0, 0, 0)]
+}
+
+[sub_resource type="Animation" id="Animation_3ejqg"]
+resource_name = "unequip"
+length = 0.3
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("model:position")
+tracks/0/interp = 2
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0, 0.3),
+"transitions": PackedFloat32Array(1, 1),
+"update": 0,
+"values": [Vector3(0, 0, 0), Vector3(-0.2, -0.2, 0)]
+}
+tracks/1/type = "value"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath("model:rotation")
+tracks/1/interp = 2
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"times": PackedFloat32Array(0, 0.3),
+"transitions": PackedFloat32Array(1, 1),
+"update": 0,
+"values": [Vector3(0, 0, 0), Vector3(0, 0, -0.872665)]
+}
+
+[sub_resource type="AnimationLibrary" id="AnimationLibrary_cdd35"]
+_data = {
+&"RESET": SubResource("Animation_wpxjn"),
+&"equip": SubResource("Animation_t56l6"),
+&"shoot": SubResource("Animation_3xdmb"),
+&"unequip": SubResource("Animation_3ejqg")
+}
+
+[node name="ArmBlaster" type="Node3D"]
+script = ExtResource("1_6bf5m")
+
+[node name="model" type="Node3D" parent="."]
+
+[node name="ak47variant" parent="model" instance=ExtResource("2_ngp04")]
+
+[node name="shot_sound" type="AudioStreamPlayer" parent="."]
+stream = ExtResource("3_o4i7d")
+volume_db = -24.36
+
+[node name="RayCast3D" type="RayCast3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.473219, 0.0266145, 0)
+target_position = Vector3(90, 0, 0)
+
+[node name="AnimationPlayer" type="AnimationPlayer" parent="."]
+libraries = {
+&"": SubResource("AnimationLibrary_cdd35")
+}
+
+[node name="hit_indicator" type="AudioStreamPlayer" parent="."]
+stream = ExtResource("4_ngp04")
+volume_db = -11.408
+
+[connection signal="animation_finished" from="AnimationPlayer" to="." method="_on_animation_player_animation_finished"]

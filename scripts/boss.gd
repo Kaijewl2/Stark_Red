@@ -1,7 +1,7 @@
 extends CharacterBody3D
 
 var player = null
-var hp = 150
+var hp = 150.0
 var state_machine
 var currentVel = Vector3.ZERO
 
@@ -12,6 +12,7 @@ const DAMAGE = 2
 
 @export var player_path : NodePath
 
+@onready var healthBarMax = $HealthBar.max_value
 @onready var healthBar = $HealthBar
 @onready var nav_agent = $NavigationAgent3D
 @onready var anim_tree = $AnimationTree
@@ -21,7 +22,8 @@ const DAMAGE = 2
 func _ready() -> void:
 	player = get_node(player_path)
 	state_machine = anim_tree.get("parameters/playback")
-	healthBar.value = hp
+	healthBar.max_value = hp
+	healthBar.value = healthBar.max_value
 	
 func _physics_process(delta: float) -> void:
 	match state_machine.get_current_node():
@@ -49,6 +51,7 @@ func _physics_process(delta: float) -> void:
 			
 		"die":
 			collisionShape.disabled = true
+	$HealthBar/Label.text = str(int(hp)) + " / " + str(int(healthBar.max_value))
 
 func hit_player():
 	if target_in_range():
@@ -60,7 +63,7 @@ func hit(damage):
 		anim_tree.set("parameters/conditions/death", true)
 	else:
 		anim_tree.set("parameters/conditions/hit", true)
-	healthBar.value -= player.DAMAGE
+	healthBar.value = hp
 
 func target_in_range():
 	return global_position.distance_to(player.global_position) < ATTACK_RANGE
