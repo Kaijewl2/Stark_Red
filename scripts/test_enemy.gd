@@ -8,13 +8,14 @@ var agro: bool
 var dir: Vector3
 
 const SPEED = 2.0
-const ATTACK_RANGE = 2.0
+const ATTACK_RANGE = 1.7
 const FIRE_RANGE = 8.0
 const MELEE_DAMAGE = 2
 const SHOOT_DAMAGE = 4
 
 @export var player_path : NodePath
 
+@onready var repulsor_sfx: AudioStreamPlayer = $repulsor_sfx
 @onready var bt_player: BTPlayer = $BTPlayer
 @onready var healthBarMax = $HealthBar.max_value
 @onready var healthBar = $HealthBar
@@ -74,10 +75,6 @@ func _physics_process(delta: float) -> void:
 func hit_player():
 	if target_in_range():
 		player.hit(MELEE_DAMAGE)
-		
-func shoot_player():
-	if target_in_fire_range():
-		player.hit(SHOOT_DAMAGE)
 
 func hit(damage):
 	hp -= damage
